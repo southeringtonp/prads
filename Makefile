@@ -1,6 +1,7 @@
 PREFIX=/usr/local
 BINDIR=${PREFIX}/bin
 CONFDIR=${PREFIX}/etc/prads
+INITDIR=${CONFDIR}/init.d
 MANDIR=${PREFIX}/share/man/man1
 DOCUTIL=rst2man
 INSTALLGROUP=root
@@ -62,8 +63,10 @@ install: man
 	# ports 
 	install -d ${DESTDIR}${CONFDIR}
 	install -C -m 644 -o root -g ${INSTALLGROUP} etc/udp.ports ${DESTDIR}${CONFDIR}/
-	install -d ${DESTDIR}${CONFDIR}/init.d
-	install -m 755 -o root -g ${INSTALLGROUP} doc/prads.rc ${DESTDIR}${CONFDIR}/init.d/
+	# init scripts 
+	install -d ${DESTDIR}${INITDIR}/
+	if [   -f /etc/redhat-release ]; then install -m 755 -o root -g ${INSTALLGROUP} doc/prads-el6.rc ${DESTDIR}${INITDIR}/prads ; fi
+	if [ ! -f /etc/redhat-release ]; then install -m 755 -o root -g ${INSTALLGROUP} doc/prads.rc ${DESTDIR}${INITDIR}/ ; fi
 	# man pages
 	install -d ${DESTDIR}${MANDIR}
 	install -m 644 -o root -g ${INSTALLGROUP} doc/prads.1.gz ${DESTDIR}${MANDIR}/
